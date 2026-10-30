@@ -129,6 +129,15 @@ def test_find_ai_service_interfaces(tmp_path: Path) -> None:
     assert find_ai_service_interfaces([tmp_path]) == ["Quarkus", "SupportAgent"]
 
 
+def test_find_ai_service_interfaces_ignores_non_java_file_roots(tmp_path: Path) -> None:
+    java_file = tmp_path / "SupportAgent.java"
+    java_file.write_text("@AiService\npublic interface SupportAgent {}\n")
+    notes_file = tmp_path / "notes.md"
+    notes_file.write_text("Example: @AiService interface DocumentationOnly {}\n")
+
+    assert find_ai_service_interfaces([java_file, notes_file]) == ["SupportAgent"]
+
+
 def test_augment_adds_typed_sinks_without_mutating_input() -> None:
     rules = yaml.safe_load(_RULES.read_text(encoding="utf-8"))
     before = yaml.safe_dump(rules)

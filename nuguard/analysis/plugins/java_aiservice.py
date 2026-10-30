@@ -32,7 +32,8 @@ _AI_SERVICE_RE = re.compile(
 
 def _java_files(root: Path) -> Iterator[Path]:
     if root.is_file():
-        yield root
+        if root.suffix.lower() == ".java":
+            yield root
         return
     for dirpath, dirnames, filenames in os.walk(root):
         dirnames[:] = sorted(d for d in dirnames if d not in _SKIP_DIRS)
